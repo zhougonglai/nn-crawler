@@ -1,65 +1,69 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useCallback } from 'react';
+import Head from 'next/head';
+import { Input, Descriptions } from 'antd';
+import { useSetState } from 'ahooks';
+import { searchUrl } from '../services/index';
+import styles from '../styles/index.module.scss';
 
 export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+	const [state, setState] = useSetState({
+		urlDetails: null,
+		loading: false,
+	});
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+	const handleSearch = useCallback(async (url) => {
+		if (url) {
+			const urlDetails = await searchUrl(
+				new URLSearchParams({
+					url: encodeURIComponent(url),
+				}).toString(),
+			).then((res) => res.json());
+			console.log(urlDetails);
+			setState({ urlDetails });
+		}
+	});
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+	const { urlDetails } = state;
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+	return (
+		<section
+			className={[
+				'flex flex-col flex-1 items-center justify-center h-full p-5',
+				styles.container,
+			].join(' ')}>
+			<Head>
+				<title>NN</title>
+				<link rel='icon' href='/favicon.ico' />
+			</Head>
+			<Input.Search
+				allowClear
+				placeholder='输入网址'
+				onSearch={handleSearch}
+				enterButton
+			/>
+			{urlDetails && (
+				<Descriptions
+					title={urlDetails.title}
+					bordered
+					layout='vertical'
+					className='mt-5'>
+					<Descriptions.Item label='关键词' span={3}>
+						{urlDetails.keywords.join(' ')}
+					</Descriptions.Item>
+					<Descriptions.Item label='描述' span={3}>
+						{urlDetails.description.join(' ')}
+					</Descriptions.Item>
+					<Descriptions.Item label='一级标题' span={3}>
+						{urlDetails.el.h1.join(' ')}
+					</Descriptions.Item>
+					<Descriptions.Item label='二级级标题' span={3}>
+						{urlDetails.el.h2.join(' ')}
+					</Descriptions.Item>
+					<Descriptions.Item label='三级标题' span={3}>
+						{urlDetails.el.h3.join(' ')}
+					</Descriptions.Item>
+				</Descriptions>
+			)}
+		</section>
+	);
 }
