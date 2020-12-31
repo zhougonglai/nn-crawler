@@ -15,7 +15,10 @@ function MyApp({ Component, pageProps }) {
 				<Header>
 					<div className={styles.title}>NN爬虫</div>
 					<link
-						href='https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css'
+						href='https://cdn.bootcdn.net/ajax/libs/normalize/8.0.1/normalize.min.css'
+						rel='stylesheet'></link>
+					<link
+						href='https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.0.0-alpha.5/utilities.min.css'
 						rel='stylesheet'></link>
 				</Header>
 				<Content className='flex-1'>

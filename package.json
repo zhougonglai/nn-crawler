@@ -6,7 +6,7 @@
 		"developer": "vercel dev",
 		"dev": "next dev",
 		"build": "next build",
-		"start": "next start"
+		"start": "next start -p 4000"
 	},
 	"dependencies": {
 		"ahooks": "^2.9.3",
